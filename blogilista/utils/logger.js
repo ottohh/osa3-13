@@ -1,4 +1,5 @@
 const info = (...params) => {
+    console.log("info:")
     console.log(...params)
   }
   
