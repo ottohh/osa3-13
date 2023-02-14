@@ -51,8 +51,8 @@ blogsRouter.delete("/:id", async(request, response,next) => {
     }
     let blogToDelete = await Blog.findById(id)
     console.log(decodedToken.id)
-    console.log(blogToDelete)
-    if(blogToDelete.user!==decodedToken.id.toString()){
+    
+    if(blogToDelete.user.toString()!==decodedToken.id){
 
       return response.status(401).json({ error: 'You dont have rights' })
 
@@ -61,6 +61,8 @@ blogsRouter.delete("/:id", async(request, response,next) => {
 
     response.status(204).end()  
 })
+
+
 
 blogsRouter.put("/:id", async(request, response,next) => {
   const id = request.params.id
