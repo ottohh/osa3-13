@@ -18,6 +18,11 @@ app.use("/api/blogs",blogsRouter)
 app.use("/api/users",usersRouter)
 app.use(require("./controllers/errorHandler"))
 app.use("/api/login",loginRouter)
+if (process.argv[2] === 'test') {
+    console.log("testing enabled")
+    const testingRouter = require('./controllers/testing')
+    app.use('/api/testing', testingRouter)
+  }
 
   
 module.exports = app

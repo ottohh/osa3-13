@@ -19,15 +19,16 @@ blogsRouter.get('/', (request, response) => {
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'token invalid' })
     }
+    console.log(decodedToken)
     const user = await User.findById(decodedToken.id)
     
-   
+    console.log(user)
     const blog = new Blog({
         title: body.title,
         author: body.author,
         url: body.url,
         likes: body.likes,
-        user:user._id
+        user:user.id
 
       })
    
@@ -51,7 +52,8 @@ blogsRouter.delete("/:id", async(request, response,next) => {
     }
     let blogToDelete = await Blog.findById(id)
     console.log(decodedToken.id)
-    
+    console.log(blogToDelete.user.toString())
+    console.log('blogToDelete.user.toString()')
     if(blogToDelete.user.toString()!==decodedToken.id){
 
       return response.status(401).json({ error: 'You dont have rights' })
@@ -66,9 +68,25 @@ blogsRouter.delete("/:id", async(request, response,next) => {
 
 blogsRouter.put("/:id", async(request, response,next) => {
   const id = request.params.id
-  const blog = request.body
-  let res =await Blog.findByIdAndUpdate(id,blog,{new:true})
-  response.json(res).end()
+  
+  console.log(request.body)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  let blogToLike = await Blog.findById(id)
+  console.log(decodedToken.id)
+ 
+  console.log(blogToLike)
+  if(blogToLike.likes===undefined){blogToLike.likes=1}
+  else{
+    blogToLike.likes=blogToLike.likes+1
+  }
+  
+  
+  
+  res=blogToLike.save()
+  response.json(blogToLike).end()
 })
 
 

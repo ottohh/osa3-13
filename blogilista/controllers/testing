@@ -1,0 +1,20 @@
+const router = require('express').Router()
+const Blog = require('../models/blog')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
+
+router.post('/reset', async (request, response) => {
+  await Blog.deleteMany({})
+  await User.deleteMany({})
+
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash("otto", saltRounds)
+
+  let user = new User({"name":"otto","username":"otto","passwordHash":passwordHash})
+
+  await user.save()
+  
+  response.status(204).end()
+})
+
+module.exports = router
